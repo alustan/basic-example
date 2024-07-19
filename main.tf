@@ -1,8 +1,18 @@
-provider "local" {
-  # The local provider doesn't require any configuration.
+# provisions cluster
+
+module "sample" {
+  source        = "./sample"
+
 }
 
-resource "local_file" "example" {
-  filename = "${path.module}/example.txt"
-  content  = "This is an example file created by Terraform."
+module "gitops_bridge" {
+  source        = "./gitops_bridge"
+  dummy_output_1 = local.dummy_output_1
+  dummy_output_2     = local.dummy_output_2
+  workspace         = var.workspace
+}
+
+locals {
+  dummy_output_1      =  module.sample.dummy_output_1 
+  dummy_output_2 =   module.sample.dummy_output_2 
 }
