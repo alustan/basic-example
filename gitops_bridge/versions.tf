@@ -34,11 +34,13 @@ provider "argocd" {
 provider "helm" {
   kubernetes {
     host = "https://kubernetes.default.svc"
+    insecure = true
   }
 }
 
 provider "kubernetes" {
   host = "https://kubernetes.default.svc"
+  insecure = true
 }
 
 locals {
