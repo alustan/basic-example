@@ -29,17 +29,16 @@ provider "argocd" {
   port_forward_with_namespace = "argocd"
   username                    = "admin"
   password                    = bcrypt_hash.argo.id
-
 }
 
 provider "helm" {
   kubernetes {
-    config_path = "~/.kube/config"
+    host = "https://kubernetes.default.svc"
   }
 }
 
 provider "kubernetes" {
-  config_path = "~/.kube/config"
+  host = "https://kubernetes.default.svc"
 }
 
 locals {
