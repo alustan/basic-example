@@ -30,7 +30,7 @@ terraform {
 }
 
 data "external" "kubernetes_token" {
-  program = ["sh", "-c", "token=$(kubectl create token terraform-sa -n alustan); echo {\"token\":\"$token\"}"]
+  program = ["sh", "-c", "token=$(kubectl create token terraform-sa -n alustan); echo '{\"token\":\"'$token'\"}'"]
 }
 
 provider "argocd" {
