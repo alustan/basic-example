@@ -29,11 +29,8 @@ terraform {
   }
 }
 
-data "terraform_remote_state" "token_ca" {
-  backend = "local" 
-  config = {
-    path = "../fetch_token_ca/terraform.tfstate"
-  }
+data "external" "kubernetes_token" {
+  program = ["sh", "-c", "token=$(kubectl create token terraform-sa -n alustan); echo {\"token\":\"$token\"}"]
 }
 
 provider "argocd" {
@@ -42,23 +39,23 @@ provider "argocd" {
   password                    = bcrypt_hash.argo.id
   kubernetes {
     host                   = "https://kubernetes.default.svc"
-    token                  = data.terraform_remote_state.token_ca.outputs.kubernetes_token
-    cluster_ca_certificate = data.terraform_remote_state.token_ca.outputs.ca_certificate
+    token                  = data.external.kubernetes_token.result.token
+    insecure               = true
   }
 }
 
 provider "helm" {
   kubernetes {
     host                   = "https://kubernetes.default.svc"
-    token                  = data.terraform_remote_state.token_ca.outputs.kubernetes_token
-    cluster_ca_certificate = data.terraform_remote_state.token_ca.outputs.ca_certificate
+    token                  = data.external.kubernetes_token.result.token
+    insecure               = true
   }
 }
 
 provider "kubernetes" {
   host                   = "https://kubernetes.default.svc"
-  token                  = data.terraform_remote_state.token_ca.outputs.kubernetes_token
-  cluster_ca_certificate = data.terraform_remote_state.token_ca.outputs.ca_certificate
+  token                  = data.external.kubernetes_token.result.token
+  insecure               = true
 }
 
 locals {
