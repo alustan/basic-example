@@ -1,2 +1,2 @@
-terraform init
+terraform init 
 terraform destroy -auto-approve

@@ -17,6 +17,11 @@ RUN wget https://releases.hashicorp.com/terraform/1.8.1/terraform_1.8.1_linux_am
     unzip terraform_1.8.1_linux_amd64.zip -d /usr/local/bin/ && \
     rm terraform_1.8.1_linux_amd64.zip
 
+# Install kubectl
+RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" && \
+    install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl && \
+    rm kubectl
+
 # Install AWS CLI
 # RUN curl -fsSL "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip" && \
 #     unzip awscliv2.zip && \
@@ -28,6 +33,7 @@ FROM ubuntu:22.04
 
 # Copy necessary binaries from the builder stage
 COPY --from=builder /usr/local/bin/terraform /usr/local/bin/terraform
+COPY --from=builder /usr/local/bin/kubectl /usr/local/bin/kubectl
 # COPY --from=builder /usr/local/bin/aws /usr/local/bin/aws
 
 # Clean up unnecessary packages from the runtime image
