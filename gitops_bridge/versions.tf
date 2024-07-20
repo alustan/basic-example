@@ -30,7 +30,7 @@ terraform {
 }
 
 data "terraform_remote_state" "token_ca" {
-  backend = "local" # or use a different backend where the state of the first configuration is stored
+  backend = "local" 
   config = {
     path = "../fetch_token_ca/terraform.tfstate"
   }

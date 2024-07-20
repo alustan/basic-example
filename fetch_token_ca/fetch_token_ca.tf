@@ -17,3 +17,5 @@ output "kubernetes_token" {
 output "ca_certificate" {
   value = base64decode(data.kubernetes_secret.k8s_ca.data["ca.crt"])
 }
+
+
