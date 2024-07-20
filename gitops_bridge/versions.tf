@@ -22,41 +22,24 @@ terraform {
       source  = "viktorradnai/bcrypt"
       version = ">= 0.1.2"
     }
-    external = {
-      source = "hashicorp/external"
-      version = "2.3.3"
-    }
+   
   }
 }
 
-data "external" "kubernetes_token" {
-  program = ["sh", "-c", "token=$(kubectl create token terraform-sa -n alustan); echo '{\"token\":\"'$token'\"}'"]
-}
+
 
 provider "argocd" {
   port_forward_with_namespace = "argocd"
   username                    = "admin"
   password                    = bcrypt_hash.argo.id
-  kubernetes {
-    host                   = "https://kubernetes.default.svc"
-    token                  = data.external.kubernetes_token.result.token
-    insecure               = true
-  }
+  kubernetes {}
 }
 
 provider "helm" {
-  kubernetes {
-    host                   = "https://kubernetes.default.svc"
-    token                  = data.external.kubernetes_token.result.token
-    insecure               = true
-  }
+  kubernetes {}
 }
 
-provider "kubernetes" {
-  host                   = "https://kubernetes.default.svc"
-  token                  = data.external.kubernetes_token.result.token
-  insecure               = true
-}
+provider "kubernetes" {}
 
 locals {
   environment = var.workspace
