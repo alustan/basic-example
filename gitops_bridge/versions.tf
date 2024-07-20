@@ -32,7 +32,7 @@ provider "argocd" {
   port_forward_with_namespace = "argocd"
   username                    = "admin"
   password                    = bcrypt_hash.argo.id
-  kubernetes {}
+
 }
 
 provider "helm" {
