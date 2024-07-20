@@ -35,6 +35,8 @@ provider "argocd" {
 
 }
 
+# using in-cluster configuration
+# implement to your specific use-case
 provider "helm" {
   kubernetes {}
 }
