@@ -1,9 +1,9 @@
 
-resource "kubernetes_namespace" "argocd" {
- metadata {
-    name = "alustan"
-  }
-}
+# resource "kubernetes_namespace" "argocd" {
+#  metadata {
+#     name = "alustan"
+#   }
+# }
 
 
 
