@@ -17,5 +17,6 @@ resource "kubernetes_secret_v1" "cluster" {
   }
   data = {}
 
+#  depends_on = [kubernetes_namespace.alustan]
 }
 
