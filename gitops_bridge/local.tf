@@ -6,6 +6,7 @@ locals {
    cluster_metadata = merge(
   
     {
+      CLUSTER_NAME        = "default_cluster"
       dummy_output_1      = var.dummy_output_1
       dummy_output_2      = var.dummy_output_2
     }
