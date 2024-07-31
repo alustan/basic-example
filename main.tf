@@ -14,3 +14,4 @@ locals {
   dummy_output_1      =  module.sample.dummy_output_1 
   dummy_output_2 =   module.sample.dummy_output_2 
 }
+
