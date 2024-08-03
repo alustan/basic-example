@@ -1,49 +1,23 @@
 # basic-example
 basic IAC example to test alustan project
 
-`./deploy.sh` to install into a local cluster
+- Can be run `locally` or `in-cluster`
 
-- Uncomment `config_path` and `kubernetes_namespace` in **gitops_bridge** module to execute from local machine
+**For local setup**
 
-```
-provider "kubernetes" {
-  # in-cluster config
-  config_path = "~/.kube/config"
-  
-}
-```
-```
-resource "kubernetes_namespace" "alustan" {
- metadata {
-    name = "alustan"
-  }
-}
-```
+- Uncomment `config_path` and comment `in_cluster_config` in root **version.tf**
 
-- Uncomment `config_path` in **postgres** module to execute from local machine
-
-```
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-}
-```
-
-
-- Uncomment `config_path` and `terraform_backend` in **root version.tf** to execute from local machine
-
-```
-provider "kubernetes" {
-  config_path = "~/.kube/config"
-}
-```
-
-```
+```terraform
 terraform {
   backend "kubernetes" {
     secret_suffix    = "state"
-    config_path      = "~/.kube/config"
-    # in_cluster_config = true
+    # config_path = "~/.kube/config"
+    in_cluster_config = true
   }
 }
+
 ```
-- 
+
+
+> **`./deploy.sh` to run locally**
+

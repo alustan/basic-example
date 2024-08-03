@@ -34,3 +34,9 @@ variable "database_password" {
   type        = string
   default     = "examplepassword"
 }
+
+variable "incluster" {
+  description = "Flag to indicate if the deployment is in-cluster"
+  type        = bool
+  default     = true
+}

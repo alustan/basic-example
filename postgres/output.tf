@@ -1,13 +1,16 @@
 
+output "pg_service_status" {
+  value = helm_release.cloudnative_pg.status
+}
 
 output "postgresql_username" {
-  value = base64decode(kubernetes_secret.postgres_secret.data["username"])
+  value = "admin"
 }
 
 output "postgresql_password" {
-  value = base64decode(kubernetes_secret.postgres_secret.data["password"])
+  value = "adminpassword"
 }
 
 output "postgresql_database" {
-  value = base64decode(kubernetes_secret.postgres_secret.data["database"])
+  value = "mydatabase"
 }

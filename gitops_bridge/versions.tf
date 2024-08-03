@@ -11,8 +11,8 @@ terraform {
 }
 
 provider "kubernetes" {
-  # in-cluster config
-  # config_path = "~/.kube/config"
+
+   config_path = var.incluster ? "" : "~/.kube/config"
   
 }
 

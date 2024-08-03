@@ -1,5 +1,13 @@
 provider "kubernetes" {
-  # config_path = "~/.kube/config"
+
+   config_path = var.incluster ? "" : "~/.kube/config"
+  
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = var.incluster ? "" : "~/.kube/config"
+  }
 }
 
 resource "kubernetes_namespace" "postgres" {
@@ -8,65 +16,62 @@ resource "kubernetes_namespace" "postgres" {
   }
 }
 
-resource "kubernetes_secret" "postgres_secret" {
+resource "kubernetes_secret" "pg_admin_secret" {
   metadata {
-    name      = "postgres-secret"
+    name      = "pg-admin-secret"
     namespace = var.namespace
   }
+
   data = {
-    username = base64encode(var.database_user)
-    password = base64encode(var.database_password)
-    database = base64encode(var.database_name)
+    username: "admin"
+    password = "adminpassword"
   }
-  type = "Opaque"
+  depends_on = [kubernetes_namespace.postgres]
 }
 
-resource "kubernetes_manifest" "cloudnativepg_operator" {
-  manifest = {
-    apiVersion = "operators.coreos.com/v1alpha1"
-    kind       = "Subscription"
-    metadata = {
-      name      = "cloudnativepg"
-      namespace = var.namespace
-    }
-    spec = {
-      channel                = "stable"
-      installPlanApproval    = "Automatic"
-      name                   = "cloudnative-pg"
-      source                 = "operatorhubio-catalog"
-      sourceNamespace        = "olm"
-    }
-  }
+
+
+
+
+resource "helm_release" "cloudnative_pg" {
+  name       = "cloudnative-pg"
+  namespace  = var.namespace
+  chart      = "cloudnative-pg"  
+  version    = "0.21.6" 
+  repository = "https://cloudnative-pg.github.io/charts"
+
+
+  timeout         = 1200
+  wait            = true
+  cleanup_on_fail = true
 }
 
-resource "kubernetes_manifest" "postgres_cluster" {
-  manifest = {
-    apiVersion = "postgresql.cnpg.io/v1"
-    kind       = "Cluster"
-    metadata = {
-      name      = var.cluster_name
-      namespace = var.namespace
-    }
-    spec = {
-      instances  = 1
-      postgresql = {
-        version = "14"
-      }
-      storage = {
-        size = var.storage_size
-      }
-      bootstrap = {
-        initdb = {
-          database = base64decode(kubernetes_secret.postgres_secret.data["database"])
-          owner    = base64decode(kubernetes_secret.postgres_secret.data["username"])
-          secret = {
-            name = kubernetes_secret.postgres_secret.metadata[0].name
-          }
-        }
-      }
-    }
+
+resource "null_resource" "apply_postgresql_cluster" {
+  provisioner "local-exec" {
+    command = <<EOT
+    echo "
+    apiVersion: postgresql.cnpg.io/v1
+    kind: Cluster
+    metadata:
+      name: my-postgres-cluster
+      namespace: postgres
+    spec:
+      instances: 1
+      storage:
+        size: 100Mi
+      bootstrap:
+        initdb:
+          database: mydatabase
+          owner: admin
+          secret:
+            name: pg_admin_secret
+    " | kubectl apply -f -
+    EOT
   }
 
-  depends_on = [kubernetes_manifest.cloudnativepg_operator]
+  depends_on = [helm_release.cloudnative_pg]
 }
+
+
 
