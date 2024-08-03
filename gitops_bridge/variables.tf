@@ -16,3 +16,21 @@ variable "workspace" {
   default   =   "default"
  }
  
+
+ variable "database_name" {
+  description = "Name of the PostgreSQL database"
+  type        = string
+  default     = "exampledb"
+}
+
+variable "database_user" {
+  description = "PostgreSQL database user"
+  type        = string
+  default     = "exampleuser"
+}
+
+variable "database_password" {
+  description = "PostgreSQL database password"
+  type        = string
+  default     = "examplepassword"
+}

@@ -8,6 +8,9 @@ locals {
     {
       dummy_output_1      = var.dummy_output_1
       dummy_output_2      = var.dummy_output_2
+      DB_PASSWORD = var.database_password
+      DB_USER = var.database_user
+      DB_NAME = var.database_name
     }
   )
 

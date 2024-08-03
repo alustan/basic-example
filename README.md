@@ -19,7 +19,17 @@ resource "kubernetes_namespace" "alustan" {
   }
 }
 ```
-- Uncomment `config_path` and `terraform_backend` in **root vesrion.tf** module to execute from local machine
+
+- Uncomment `config_path` in **postgres** module to execute from local machine
+
+```
+provider "kubernetes" {
+  config_path = "~/.kube/config"
+}
+```
+
+
+- Uncomment `config_path` and `terraform_backend` in **root version.tf** to execute from local machine
 
 ```
 provider "kubernetes" {
@@ -36,3 +46,4 @@ terraform {
   }
 }
 ```
+- 
