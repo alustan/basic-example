@@ -18,15 +18,29 @@ resource "kubernetes_namespace" "postgres" {
 
 resource "kubernetes_secret" "pg_admin_secret" {
   metadata {
-    name      = "pg-admin-secret"
+    name      = "app-secret"
     namespace = var.namespace
   }
 
+  type = "kubernetes.io/basic-auth"
+
   data = {
-    username: "admin"
-    password = "adminpassword"
+    username = base64encode("admin")
+    password = base64encode("adminpassword")
+    database = base64encode("db")
   }
+
   depends_on = [kubernetes_namespace.postgres]
+}
+
+
+# Fetch the Kubernetes Secret created by CNPG
+data "kubernetes_secret" "postgresql_creds" {
+  metadata {
+    name      = "app-secret"
+    namespace =  var.namespace
+  }
+  depends_on = [null_resource.apply_postgresql_cluster]
 }
 
 
@@ -54,18 +68,21 @@ resource "null_resource" "apply_postgresql_cluster" {
     apiVersion: postgresql.cnpg.io/v1
     kind: Cluster
     metadata:
-      name: my-postgres-cluster
-      namespace: postgres
+      name: alustan-pg
     spec:
       instances: 1
-      storage:
-        size: 100Mi
+
+
       bootstrap:
         initdb:
-          database: mydatabase
+          database: db
           owner: admin
           secret:
-            name: pg_admin_secret
+            name: app-secret
+
+      storage:
+        size: 250Mi
+      
     " | kubectl apply -f -
     EOT
   }

@@ -5,7 +5,7 @@ basic IAC example to test alustan project
 
 **For local setup**
 
-- Uncomment `config_path` and comment `in_cluster_config` in root **version.tf**
+- Uncomment backend `config_path` and comment `in_cluster_config` in root **version.tf**
 
 ```terraform
 terraform {
@@ -17,7 +17,7 @@ terraform {
 }
 
 ```
-
+- Set `incluster` variable to `false` in **variables.tf**
 
 > **`./deploy.sh` to run locally**
 

@@ -4,13 +4,13 @@ output "pg_service_status" {
 }
 
 output "postgresql_username" {
-  value = "admin"
+  value = base64decode(data.kubernetes_secret.postgresql_creds.data["username"])
 }
 
 output "postgresql_password" {
-  value = "adminpassword"
+  value = base64decode(data.kubernetes_secret.postgresql_creds.data["password"])
 }
 
 output "postgresql_database" {
-  value = "mydatabase"
+  value = base64decode(data.kubernetes_secret.postgresql_creds.data["database"])
 }

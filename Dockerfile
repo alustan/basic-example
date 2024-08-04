@@ -12,6 +12,8 @@ RUN apt-get update && \
     ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
+   
+
 # Download and install Terraform
 RUN wget https://releases.hashicorp.com/terraform/1.8.1/terraform_1.8.1_linux_amd64.zip && \
     unzip terraform_1.8.1_linux_amd64.zip -d /usr/local/bin/ && \
